@@ -168,7 +168,9 @@ namespace Week02
 
         void RasterizeLine(Vector3 v1, Vector3 v2, Vector3 normal)
         {
+            Vector3 dir = v1 - v2;
             // - Line rasterization is not implemented. This is a challenge for you ;)
+
         }
 
 
