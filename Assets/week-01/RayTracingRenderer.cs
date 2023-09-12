@@ -14,6 +14,7 @@ namespace Week01
         public Color objectColor = Color.white;
         // ray misses will have this color
         public Color backgroundColor = Color.black;
+        public Color rayColor = Color.green;
              
         // for recursive ray tracing, we mix the color of the current object by the reflection color with this factor
         [Range(0.0f, 1.0f)]
@@ -55,13 +56,15 @@ namespace Week01
                     // TODO
                     // find appropriate pixel location in the space of the screen quad
                     // (assumes quad is 1x1 units, with normal == local -z)
+                    Vector3 pixelPosition = screen.transform.position + screen.transform.forward - 0.5f * screen.transform.right + (i + 0.5f) * step.x * screen.transform.right - 0.5f * screen.transform.up + (j + 0.5f) * step.y * screen.transform.up;
 
                     // TODO
                     // create primary (from camera to scene, though pixel (i,j) ) ray 
+                    Ray ray = new Ray(camera.transform.position, (pixelPosition - camera.transform.position).normalized);
 
                     // TODO
                     // send your ray to the IntersectionTest function
-                    colorBuffer[j * screenPixels + i] = (Color32) backgroundColor;// IntersectionTest(ray, maxBounces);
+                    colorBuffer[j * screenPixels + i] = (Color32)IntersectionTest(ray,maxBounces);// IntersectionTest(ray, maxBounces);
 
                 }
             }
@@ -83,10 +86,9 @@ namespace Week01
 
 
                 // Optional feature: here you can implement recursive intersection test for rendering reflections, until bounces == 0
-
                 // draw the rays on the editor, to help you visualizing and debugging
                 if (drawDebugLines)
-                    Debug.DrawLine(ray.origin, hit.point, color);
+                    Debug.DrawLine(ray.origin, hit.point, rayColor);
 
                 return color;
             }
