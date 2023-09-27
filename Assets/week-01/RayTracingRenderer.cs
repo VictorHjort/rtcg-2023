@@ -86,6 +86,16 @@ namespace Week01
 
 
                 // Optional feature: here you can implement recursive intersection test for rendering reflections, until bounces == 0
+                // Optional feature: here you can implement recursive intersection test for rendering reflections, until bounces == 0
+                if (bounces > 0)
+                {
+                    // mix this intersection color and next bounce color and return
+                    Ray reflectionRay = new Ray(hit.point, Vector3.Reflect(ray.direction, hit.normal));
+                    Color reflectionColor = IntersectionTest(reflectionRay, bounces - 1);
+                    color = Color.Lerp(color, reflectionColor, reflectiveness);
+                }
+
+
                 // draw the rays on the editor, to help you visualizing and debugging
                 if (drawDebugLines)
                     Debug.DrawLine(ray.origin, hit.point, rayColor);
@@ -102,10 +112,12 @@ namespace Week01
             // Optional feature: shadows can be computer here. With ray tracing, we can use a shadow ray, that is,
             // a ray from the intersection position towards the light. If the light is occluded by geometry,
             // this means that this point is in shadow.
+            Ray shadowRay = new Ray(position, -lightSource.transform.forward);
+            float lightVisibility = Physics.Raycast(shadowRay) ? 0.0f : 1.0f; // 0.0 == position in shadow
 
 
             // Light computation with diffuse and ambient contributions
-            float diffuseIntensity = Mathf.Max(0, Vector3.Dot(normal, -lightSource.transform.forward));
+            float diffuseIntensity = Mathf.Max(0, Vector3.Dot(normal, -lightSource.transform.forward)) * lightVisibility;
             Color color = (diffuseIntensity * objectColor * lightSource.color);
 
             return color;
